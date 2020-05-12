@@ -21,6 +21,7 @@ namespace SplitwiseClientRunner
 
             var currentUser = await client.GetCurrentUser();
             var userId = await client.GetUser(7789945);
+            var friends = await client.GetFriends();
 
             Console.WriteLine(currentUser.Info.Id);
         }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using RestSharp;
 using RestSharp.Serializers.SystemTextJson;
@@ -68,6 +69,7 @@ namespace SplitwiseClient
 
         /// <summary>
         /// Retrieve info about another user that the current user is acquainted with (e.g. they are friends, or they both belong to the same group).
+        /// Sends a GET request to https://secure.splitwise.com/api/v3.0/get_user/:id
         /// </summary>
         /// <param name="id">The ID of the user to retrieve</param>
         /// <returns>The user object for the ID passed in.</returns>
@@ -75,6 +77,17 @@ namespace SplitwiseClient
         {
             var req = new RestRequest($"{Api}/get_user/{id}", DataFormat.Json);
             return _client.GetAsync<User>(req);
+        }
+
+        /// <summary>
+        /// Returns a list of the current user's friends.
+        /// Sends a GET request to https://secure.splitwise.com/api/v3.0/get_friends 
+        /// </summary>
+        /// <returns></returns>
+        public Task<Friends> GetFriends()
+        {
+            var req = new RestRequest($"{Api}/get_friends", DataFormat.Json);
+            return _client.GetAsync<Friends>(req);
         }
     }
 }
