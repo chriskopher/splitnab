@@ -2,10 +2,11 @@
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
+using SplitwiseClient;
 
 namespace SplitwiseClientRunner
 {
-    class Program
+    internal class Program
     {
         public static async Task Main()
         {
@@ -16,14 +17,16 @@ namespace SplitwiseClientRunner
             var consumerKey = json.Splitwise.ConsumerKey;
             var consumerSecret = json.Splitwise.ConsumerSecret;
 
-            var client = new SplitwiseClient.Client(consumerKey, consumerSecret);
+            var client = new Client(consumerKey, consumerSecret);
             await client.ConfigureAccessToken();
 
-            var currentUser = await client.GetCurrentUser();
+            var currentUserResponse = await client.GetCurrentUser();
             var userId = await client.GetUser(7789945);
             var friends = await client.GetFriends();
 
-            Console.WriteLine(currentUser.Info.Id);
+            Console.WriteLine(currentUserResponse?.User?.Id);
+            Console.WriteLine(userId?.User?.Id);
+            Console.WriteLine(friends?.Friends?.Count);
         }
     }
 }

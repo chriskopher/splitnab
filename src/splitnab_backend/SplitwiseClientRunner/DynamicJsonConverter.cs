@@ -7,9 +7,9 @@ using System.Text.Json.Serialization;
 namespace SplitwiseClientRunner
 {
     /// <summary>
-    /// Temp Dynamic Converter
-    /// by:tchivs@live.cn
-    /// From https://github.com/dotnet/runtime/issues/29690#issuecomment-571969037
+    ///     Temp Dynamic Converter
+    ///     by:tchivs@live.cn
+    ///     From https://github.com/dotnet/runtime/issues/29690#issuecomment-571969037
     /// </summary>
     public class DynamicJsonConverter : JsonConverter<dynamic>
     {
@@ -29,7 +29,7 @@ namespace SplitwiseClientRunner
 
             if (reader.TokenType == JsonTokenType.Number)
             {
-                if (reader.TryGetInt64(out long l))
+                if (reader.TryGetInt64(out var l))
                 {
                     return l;
                 }
@@ -39,7 +39,7 @@ namespace SplitwiseClientRunner
 
             if (reader.TokenType == JsonTokenType.String)
             {
-                if (reader.TryGetDateTime(out DateTime datetime))
+                if (reader.TryGetDateTime(out var datetime))
                 {
                     return datetime;
                 }
@@ -90,7 +90,7 @@ namespace SplitwiseClientRunner
                 case JsonValueKind.Number:
                     //TODO: more num type
                     result = 0;
-                    if (jsonElement.TryGetInt64(out long l))
+                    if (jsonElement.TryGetInt64(out var l))
                     {
                         result = l;
                     }
