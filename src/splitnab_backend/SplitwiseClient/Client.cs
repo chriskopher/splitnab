@@ -27,7 +27,7 @@ namespace SplitwiseClient
         }
 
         /// <summary>
-        /// Get an access token from the OAuth server.
+        ///     Get an access token from the OAuth server.
         /// </summary>
         /// <returns>The access token.</returns>
         public Task<AccessToken> GetAuthorizationToken()
@@ -43,7 +43,7 @@ namespace SplitwiseClient
         }
 
         /// <summary>
-        /// Set the default access token to be used on each request. If the token is null, no action is performed.
+        ///     Set the default access token to be used on each request. If the token is null, no action is performed.
         /// </summary>
         /// <param name="token">The access token to be set as the default</param>
         public void SetAuthorizationToken(AccessToken token)
@@ -60,8 +60,8 @@ namespace SplitwiseClient
         }
 
         /// <summary>
-        /// Retrieve info about the user who is currently logged in.
-        /// Sends a GET request to https://secure.splitwise.com/api/v3.0/get_current_user
+        ///     Retrieve info about the user who is currently logged in.
+        ///     Sends a GET request to https://secure.splitwise.com/api/v3.0/get_current_user
         /// </summary>
         /// <returns>The current user object.</returns>
         public Task<CurrentUserResponse> GetCurrentUser()
@@ -71,9 +71,9 @@ namespace SplitwiseClient
         }
 
         /// <summary>
-        /// Retrieve info about another user that the current user is acquainted with (e.g. they are friends, or they both
-        /// belong to the same group).
-        /// Sends a GET request to https://secure.splitwise.com/api/v3.0/get_user/:id
+        ///     Retrieve info about another user that the current user is acquainted with (e.g. they are friends, or they both
+        ///     belong to the same group).
+        ///     Sends a GET request to https://secure.splitwise.com/api/v3.0/get_user/:id
         /// </summary>
         /// <param name="id">The ID of the user to retrieve</param>
         /// <returns>The user object for the ID passed in.</returns>
@@ -84,8 +84,8 @@ namespace SplitwiseClient
         }
 
         /// <summary>
-        /// Returns a list of the current user's friends.
-        /// Sends a GET request to https://secure.splitwise.com/api/v3.0/get_friends
+        ///     Returns a list of the current user's friends.
+        ///     Sends a GET request to https://secure.splitwise.com/api/v3.0/get_friends
         /// </summary>
         /// <returns></returns>
         public Task<FriendsResponse> GetFriends()
@@ -95,10 +95,10 @@ namespace SplitwiseClient
         }
 
         /// <summary>
-        /// Return expenses involving the current user, in reverse chronological order
-        /// Sends a GET request to https://secure.splitwise.com/api/v3.0/get_expenses
-        ///
-        /// TODO: add all query params when documentation gets better, it currently doesn't show anything https://dev.splitwise.com/#expenses
+        ///     Return expenses involving the current user, in reverse chronological order
+        ///     Sends a GET request to https://secure.splitwise.com/api/v3.0/get_expenses
+        ///     TODO: add all query params when documentation gets better, it currently doesn't show anything
+        ///     https://dev.splitwise.com/#expenses
         /// </summary>
         /// <param name="groupId">group_id query parameter</param>
         /// <param name="friendId">friend_id query parameter</param>
@@ -112,12 +112,29 @@ namespace SplitwiseClient
             var req = new RestRequest($"{Api}/get_expenses");
 
             if (groupId.HasValue)
+            {
                 req.AddQueryParameter("group_id", groupId.Value.ToString(CultureInfo.InvariantCulture));
+            }
+
             if (friendId.HasValue)
+            {
                 req.AddQueryParameter("friend_id", friendId.Value.ToString(CultureInfo.InvariantCulture));
-            if (visible.HasValue) req.AddQueryParameter("visible", visible.ToString());
-            if (order != null) req.AddQueryParameter("order", order);
-            if (limit != 20) req.AddQueryParameter("limit", limit.ToString(CultureInfo.InvariantCulture));
+            }
+
+            if (visible.HasValue)
+            {
+                req.AddQueryParameter("visible", visible.ToString());
+            }
+
+            if (order != null)
+            {
+                req.AddQueryParameter("order", order);
+            }
+
+            if (limit != 20)
+            {
+                req.AddQueryParameter("limit", limit.ToString(CultureInfo.InvariantCulture));
+            }
 
             return _client.GetAsync<ExpensesResponse>(req);
         }

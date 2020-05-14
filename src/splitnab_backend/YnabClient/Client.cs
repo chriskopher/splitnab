@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using RestSharp;
 using RestSharp.Serializers.SystemTextJson;
+using YnabClient.Model.Budgets;
 using YnabClient.Model.User;
 
 namespace YnabClient
@@ -18,7 +19,7 @@ namespace YnabClient
         }
 
         /// <summary>
-        /// Returns authenticated user information.
+        ///     Returns authenticated user information.
         /// </summary>
         /// <returns></returns>
         public Task<UserResponse> GetCurrentUser()
@@ -26,6 +27,22 @@ namespace YnabClient
             var req = new RestRequest($"{Api}/user", DataFormat.Json);
 
             return _client.GetAsync<UserResponse>(req);
+        }
+
+        /// <summary>
+        ///     Returns budgets list with summary information
+        /// </summary>
+        /// <param name="includeAccounts">include_accounts query parameter - Whether to include the list of budget accounts</param>
+        /// <returns></returns>
+        public Task<BudgetSummaryResponse> GetBudgets(bool? includeAccounts = null)
+        {
+            var req = new RestRequest($"{Api}/budgets", DataFormat.Json);
+            if (includeAccounts.HasValue)
+            {
+                req.AddQueryParameter("include_accounts", includeAccounts.Value.ToString());
+            }
+
+            return _client.GetAsync<BudgetSummaryResponse>(req);
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
+using YnabClient;
 
 namespace ClientRunner
 {
@@ -30,9 +31,11 @@ namespace ClientRunner
             // Console.WriteLine(expenses?.Expenses?.Count);
 
             var personalAccessToken = json.YNAB.PersonalAccessToken;
-            var ynabClient = new YnabClient.Client(personalAccessToken);
+            var ynabClient = new Client(personalAccessToken);
 
             var ynabUser = await ynabClient.GetCurrentUser();
+            var ynabBudgets = await ynabClient.GetBudgets(true);
+
             Console.WriteLine(ynabUser?.Data?.User?.Id);
         }
     }
