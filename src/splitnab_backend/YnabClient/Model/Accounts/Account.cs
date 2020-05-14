@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text.Json.Serialization;
 
-namespace YnabClient.Model.Budgets
+namespace YnabClient.Model.Accounts
 {
     public class Account
     {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using YnabClient.Model.Accounts;
 
 namespace YnabClient.Model.Budgets
 {
@@ -35,6 +36,6 @@ namespace YnabClient.Model.Budgets
         /// </summary>
         /// <returns></returns>
         [JsonPropertyName("accounts")]
-        public List<Account> Accounts { get; set; }
+        public List<Account>? Accounts { get; set; }
     }
 }
