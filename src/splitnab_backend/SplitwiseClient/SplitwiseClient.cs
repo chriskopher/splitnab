@@ -1,7 +1,9 @@
+using System.Globalization;
 using System.Threading.Tasks;
 using RestSharp;
 using RestSharp.Serializers.SystemTextJson;
 using SplitwiseClient.Model.ApiResponse;
+using SplitwiseClient.Model.Expenses;
 using SplitwiseClient.Model.Friends;
 using SplitwiseClient.Model.Users;
 
@@ -90,6 +92,34 @@ namespace SplitwiseClient
         {
             var req = new RestRequest($"{Api}/get_friends", DataFormat.Json);
             return _client.GetAsync<FriendsResponse>(req);
+        }
+
+        /// <summary>
+        /// Return expenses involving the current user, in reverse chronological order
+        /// Sends a GET request to https://secure.splitwise.com/api/v3.0/get_expenses
+        ///
+        /// TODO: add all query params when documentation gets better, it currently doesn't show anything https://dev.splitwise.com/#expenses
+        /// </summary>
+        /// <param name="groupId">group_id query parameter</param>
+        /// <param name="friendId">friend_id query parameter</param>
+        /// <param name="visible">visible query parameter</param>
+        /// <param name="order">order query parameter</param>
+        /// <param name="limit">limit query parameter (defaults to 20; set to 0 to fetch all)</param>
+        /// <returns></returns>
+        public Task<ExpensesResponse> GetExpenses(int? groupId = null, int? friendId = null, bool? visible = null,
+            string? order = null, int limit = 20)
+        {
+            var req = new RestRequest($"{Api}/get_expenses");
+
+            if (groupId.HasValue)
+                req.AddQueryParameter("group_id", groupId.Value.ToString(CultureInfo.InvariantCulture));
+            if (friendId.HasValue)
+                req.AddQueryParameter("friend_id", friendId.Value.ToString(CultureInfo.InvariantCulture));
+            if (visible.HasValue) req.AddQueryParameter("visible", visible.ToString());
+            if (order != null) req.AddQueryParameter("order", order);
+            if (limit != 20) req.AddQueryParameter("limit", limit.ToString(CultureInfo.InvariantCulture));
+
+            return _client.GetAsync<ExpensesResponse>(req);
         }
     }
 }

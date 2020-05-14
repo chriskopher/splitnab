@@ -39,7 +39,5 @@ namespace SplitwiseClient.Model.Users
         public int? NotificationsCount { get; set; }
 
         [JsonPropertyName("notifications")] public Notifications? Notifications { get; set; }
-
-        [JsonPropertyName("balance")] public List<Balance>? Balance { get; set; }
     }
 }
