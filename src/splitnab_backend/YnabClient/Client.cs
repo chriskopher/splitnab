@@ -6,6 +6,7 @@ using RestSharp.Serializers.SystemTextJson;
 using YnabClient.Model.Accounts;
 using YnabClient.Model.Budgets;
 using YnabClient.Model.Categories;
+using YnabClient.Model.Payees;
 using YnabClient.Model.User;
 
 namespace YnabClient
@@ -96,6 +97,30 @@ namespace YnabClient
             }
 
             return _client.GetAsync<CategoriesResponse>(req);
+        }
+
+        /// <summary>
+        ///     Returns all payees.
+        /// </summary>
+        /// <param name="budgetId">
+        ///     The id of the budget (“last-used” can be used to specify the last used budget and “default” can
+        ///     be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget)
+        /// </param>
+        /// <param name="lastKnowledgeOfServer">
+        ///     last_knowledge_of_server query parameter - The starting server knowledge. If
+        ///     provided, only entities that have changed since last_knowledge_of_server will be included.
+        /// </param>
+        /// <returns>List payees</returns>
+        public Task<PayeesResponse> GetBudgetPayees(Guid budgetId, long? lastKnowledgeOfServer = null)
+        {
+            var req = new RestRequest($"{Api}/budgets/{budgetId}/payees", DataFormat.Json);
+            if (lastKnowledgeOfServer.HasValue)
+            {
+                req.AddQueryParameter("last_knowledge_of_server",
+                    lastKnowledgeOfServer.Value.ToString(CultureInfo.InvariantCulture));
+            }
+
+            return _client.GetAsync<PayeesResponse>(req);
         }
     }
 }

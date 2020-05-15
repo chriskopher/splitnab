@@ -40,6 +40,7 @@ namespace ClientRunner
             {
                 var ynabBudgetAccounts = await ynabClient.GetBudgetAccounts(budgetId.Value);
                 var ynabBudgetCategories = await ynabClient.GetBudgetCategories(budgetId.Value);
+                var ynabBudgetPayees = await ynabClient.GetBudgetPayees(budgetId.Value);
             }
 
             Console.WriteLine(ynabUser?.Data?.User?.Id);
