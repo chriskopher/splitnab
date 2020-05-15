@@ -5,6 +5,7 @@ using RestSharp;
 using RestSharp.Serializers.SystemTextJson;
 using YnabClient.Model.Accounts;
 using YnabClient.Model.Budgets;
+using YnabClient.Model.Categories;
 using YnabClient.Model.User;
 
 namespace YnabClient
@@ -70,6 +71,31 @@ namespace YnabClient
             }
 
             return _client.GetAsync<AccountsResponse>(req);
+        }
+
+        /// <summary>
+        ///     Returns all categories grouped by category group. Amounts (budgeted, activity, balance, etc.) are specific to the
+        ///     current budget month (UTC).
+        /// </summary>
+        /// <param name="budgetId">
+        ///     The id of the budget (“last-used” can be used to specify the last used budget and “default” can
+        ///     be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget)
+        /// </param>
+        /// <param name="lastKnowledgeOfServer">
+        ///     last_knowledge_of_server query parameter - The starting server knowledge. If
+        ///     provided, only entities that have changed since last_knowledge_of_server will be included.
+        /// </param>
+        /// <returns>List categories</returns>
+        public Task<CategoriesResponse> GetBudgetCategories(Guid budgetId, long? lastKnowledgeOfServer = null)
+        {
+            var req = new RestRequest($"{Api}/budgets/{budgetId}/categories", DataFormat.Json);
+            if (lastKnowledgeOfServer.HasValue)
+            {
+                req.AddQueryParameter("last_knowledge_of_server",
+                    lastKnowledgeOfServer.Value.ToString(CultureInfo.InvariantCulture));
+            }
+
+            return _client.GetAsync<CategoriesResponse>(req);
         }
     }
 }

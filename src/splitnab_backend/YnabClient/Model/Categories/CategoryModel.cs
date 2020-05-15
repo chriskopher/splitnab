@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace YnabClient.Model.Accounts
+namespace YnabClient.Model.Categories
 {
-    public class AccountsModel
+    public class CategoryModel
     {
-        [JsonPropertyName("accounts")] public List<Account>? Accounts { get; set; }
+        [JsonPropertyName("category_groups")] public List<CategoryGroupWithCategories>? CategoryGroups { get; set; }
 
         /// <summary>
         ///     The knowledge of the server
