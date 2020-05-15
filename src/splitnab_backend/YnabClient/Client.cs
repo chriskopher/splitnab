@@ -7,6 +7,7 @@ using YnabClient.Model.Accounts;
 using YnabClient.Model.Budgets;
 using YnabClient.Model.Categories;
 using YnabClient.Model.Payees;
+using YnabClient.Model.Transactions;
 using YnabClient.Model.User;
 
 namespace YnabClient
@@ -121,6 +122,29 @@ namespace YnabClient
             }
 
             return _client.GetAsync<PayeesResponse>(req);
+        }
+
+        /// <summary>
+        ///     Creates a single transaction or multiple transactions. If you provide a body containing a transaction object,
+        ///     single transaction will be created and if you provide a body containing a transactions array, multiple transactions
+        ///     will be created. Scheduled transactions cannot be created on this endpoint.
+        /// </summary>
+        /// <param name="budgetId">
+        ///     The id of the budget (“last-used” can be used to specify the last used budget and “default” can
+        ///     be used if default budget selection is enabled (see: https://api.youneedabudget.com/#oauth-default-budget)
+        /// </param>
+        /// <param name="data">
+        ///     The transaction or transactions to create. To create a single transaction you can specify a value
+        ///     for the transaction object and to create multiple transactions you can specify an array of transactions. It is
+        ///     expected that you will only provide a value for one of these objects.
+        /// </param>
+        /// <returns></returns>
+        public Task<SaveTransactionsResponse> PostTransactions(Guid budgetId, Transactions data)
+        {
+            var req = new RestRequest($"{Api}/budgets/{budgetId}/transactions", DataFormat.Json);
+            req.AddJsonBody(data);
+
+            return _client.PostAsync<SaveTransactionsResponse>(req);
         }
     }
 }

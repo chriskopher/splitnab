@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
 using YnabClient;
+using YnabClient.Model.Transactions;
 
 namespace ClientRunner
 {
@@ -30,20 +32,33 @@ namespace ClientRunner
             // Console.WriteLine(friends?.Friends?.Count);
             // Console.WriteLine(expenses?.Expenses?.Count);
 
-            var personalAccessToken = json.YNAB.PersonalAccessToken;
-            var ynabClient = new Client(personalAccessToken);
+            // var personalAccessToken = json.YNAB.PersonalAccessToken;
+            // var ynabClient = new Client(personalAccessToken);
+            //
+            // var ynabUser = await ynabClient.GetCurrentUser();
+            // var ynabBudgets = await ynabClient.GetBudgets(true);
+            // var budgetId = ynabBudgets?.Data?.Budgets?[1].Id;
+            // if (budgetId.HasValue)
+            // {
+            //     var ynabBudgetAccounts = await ynabClient.GetBudgetAccounts(budgetId.Value);
+            //     var ynabBudgetCategories = await ynabClient.GetBudgetCategories(budgetId.Value);
+            //     var ynabBudgetPayees = await ynabClient.GetBudgetPayees(budgetId.Value);
+            // }
+            //
+            // Console.WriteLine(ynabUser?.Data?.User?.Id);
 
-            var ynabUser = await ynabClient.GetCurrentUser();
-            var ynabBudgets = await ynabClient.GetBudgets(true);
-            var budgetId = ynabBudgets?.Data?.Budgets?[1].Id;
-            if (budgetId.HasValue)
+            var options = new JsonSerializerOptions {WriteIndented = true};
+            var trans = new Transactions
             {
-                var ynabBudgetAccounts = await ynabClient.GetBudgetAccounts(budgetId.Value);
-                var ynabBudgetCategories = await ynabClient.GetBudgetCategories(budgetId.Value);
-                var ynabBudgetPayees = await ynabClient.GetBudgetPayees(budgetId.Value);
-            }
-
-            Console.WriteLine(ynabUser?.Data?.User?.Id);
+                SaveTransactions = new List<SaveTransaction>
+                {
+                    new SaveTransaction
+                    {
+                        SubTransactions = new List<SaveSubTransaction> {new SaveSubTransaction()}
+                    }
+                }
+            };
+            var jsonString = JsonSerializer.Serialize(trans, options);
         }
     }
 }
