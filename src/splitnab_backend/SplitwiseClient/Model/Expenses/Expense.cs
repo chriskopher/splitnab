@@ -11,9 +11,6 @@ namespace SplitwiseClient.Model.Expenses
         [JsonPropertyName("group_id")] public int? GroupId { get; set; }
         [JsonPropertyName("friendship_id")] public int? FriendshipId { get; set; }
 
-        [JsonPropertyName("expense_bundle_id")]
-        public int? ExpenseBundleId { get; set; }
-
         [JsonPropertyName("description")] public string? Description { get; set; }
         [JsonPropertyName("repeats")] public bool Repeats { get; set; }
         [JsonPropertyName("repeat_interval")] public string? RepeatInterval { get; set; }
@@ -27,9 +24,6 @@ namespace SplitwiseClient.Model.Expenses
         [JsonPropertyName("comments_count")] public int CommentsCount { get; set; }
         [JsonPropertyName("payment")] public bool Payment { get; set; }
         [JsonPropertyName("creation_method")] public string? CreationMethod { get; set; }
-
-        [JsonPropertyName("transaction_method")]
-        public string? TransactionMethod { get; set; }
 
         [JsonPropertyName("transaction_confirmed")]
         public bool TransactionConfirmed { get; set; }
@@ -47,6 +41,17 @@ namespace SplitwiseClient.Model.Expenses
         [JsonPropertyName("deleted_by")] public User? DeletedBy { get; set; }
         [JsonPropertyName("category")] public Category? Category { get; set; }
         [JsonPropertyName("receipt")] public Receipt? Receipt { get; set; }
-        [JsonPropertyName("users")] public List<User>? Users { get; set; }
+
+        [JsonPropertyName("users")] public List<Users>? Users { get; set; }
+    }
+
+    public class Users
+    {
+        [JsonPropertyName("users")] public User? User { get; set; }
+
+        [JsonPropertyName("user_id")] public int UserId { get; set; }
+        [JsonPropertyName("paid_share")] public string PaidShare { get; set; }
+        [JsonPropertyName("owed_share")] public string OwedShare { get; set; }
+        [JsonPropertyName("net_balance")] public string NetBalance { get; set; }
     }
 }

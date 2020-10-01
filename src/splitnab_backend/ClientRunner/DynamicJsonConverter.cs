@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Dynamic;
+using System.Globalization;
+using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -9,59 +11,31 @@ namespace ClientRunner
     /// <summary>
     ///     Temp Dynamic Converter
     ///     by:tchivs@live.cn
-    ///     From https://github.com/dotnet/runtime/issues/29690#issuecomment-571969037
+    ///     From https://github.com/dotnet/runtime/issues/29690#issuecomment-571969037,
+    ///     https://github.com/dotnet/runtime/issues/29690#issuecomment-644772205,
+    ///     https://github.com/dotnet/runtime/issues/29690#issuecomment-660301949
     /// </summary>
     public class DynamicJsonConverter : JsonConverter<dynamic>
     {
-        public override dynamic Read(ref Utf8JsonReader reader,
-            Type typeToConvert,
-            JsonSerializerOptions options)
+        public override dynamic Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            if (reader.TokenType == JsonTokenType.True)
+            return reader.TokenType switch
             {
-                return true;
-            }
-
-            if (reader.TokenType == JsonTokenType.False)
-            {
-                return false;
-            }
-
-            if (reader.TokenType == JsonTokenType.Number)
-            {
-                if (reader.TryGetInt64(out var l))
-                {
-                    return l;
-                }
-
-                return reader.GetDouble();
-            }
-
-            if (reader.TokenType == JsonTokenType.String)
-            {
-                if (reader.TryGetDateTime(out var datetime))
-                {
-                    return datetime;
-                }
-
-                return reader.GetString();
-            }
-
-            if (reader.TokenType == JsonTokenType.StartObject)
-            {
-                using JsonDocument documentV = JsonDocument.ParseValue(ref reader);
-                return ReadObject(documentV.RootElement);
-            }
-
-            // Use JsonElement as fallback.
-            // Newtonsoft uses JArray or JObject.
-            JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return document.RootElement.Clone();
+                JsonTokenType.True => true,
+                JsonTokenType.False => false,
+                JsonTokenType.Number => reader.TryGetInt64(out var l) ? l : reader.GetDouble(),
+                JsonTokenType.String => reader.TryGetDateTime(out var datetime)
+                    ? datetime.ToString(CultureInfo.InvariantCulture)
+                    : reader.GetString(),
+                JsonTokenType.StartObject => ReadObject(JsonDocument.ParseValue(ref reader).RootElement),
+                // Use JsonElement as fallback.
+                _ => JsonDocument.ParseValue(ref reader).RootElement.Clone()
+            };
         }
 
         private object ReadObject(JsonElement jsonElement)
         {
-            IDictionary<string, object> expandoObject = new ExpandoObject();
+            IDictionary<string, object?> expandoObject = new ExpandoObject();
             foreach (var obj in jsonElement.EnumerateObject())
             {
                 var k = obj.Name;
@@ -74,61 +48,30 @@ namespace ClientRunner
 
         private object? ReadValue(JsonElement jsonElement)
         {
-            object? result = null;
-            switch (jsonElement.ValueKind)
+            return jsonElement.ValueKind switch
             {
-                case JsonValueKind.Object:
-                    result = ReadObject(jsonElement);
-                    break;
-                case JsonValueKind.Array:
-                    result = ReadList(jsonElement);
-                    break;
-                case JsonValueKind.String:
-                    //TODO: Missing Datetime&Bytes Convert
-                    result = jsonElement.GetString();
-                    break;
-                case JsonValueKind.Number:
-                    //TODO: more num type
-                    result = 0;
-                    if (jsonElement.TryGetInt64(out var l))
-                    {
-                        result = l;
-                    }
-
-                    break;
-                case JsonValueKind.True:
-                    result = true;
-                    break;
-                case JsonValueKind.False:
-                    result = false;
-                    break;
-                case JsonValueKind.Undefined:
-                case JsonValueKind.Null:
-                    result = null;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
-            return result;
+                JsonValueKind.Object => ReadObject(jsonElement),
+                JsonValueKind.Array => ReadList(jsonElement),
+                JsonValueKind.String => jsonElement.GetString(),
+                JsonValueKind.Number => jsonElement.TryGetInt64(out var l) ? l : 0,
+                JsonValueKind.True => true,
+                JsonValueKind.False => false,
+                JsonValueKind.Undefined => null,
+                JsonValueKind.Null => null,
+                _ => throw new ArgumentOutOfRangeException()
+            };
         }
 
         private object? ReadList(JsonElement jsonElement)
         {
-            IList<object?> list = new List<object?>();
-            foreach (var item in jsonElement.EnumerateArray())
-            {
-                list.Add(ReadValue(item));
-            }
-
+            var list = new List<object?>();
+            jsonElement.EnumerateArray().ToList().ForEach(j => list.Add(ReadValue(j)));
             return list.Count == 0 ? null : list;
         }
 
-        public override void Write(Utf8JsonWriter writer,
-            object value,
-            JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, object value, JsonSerializerOptions options)
         {
-            // writer.WriteStringValue(value.ToString());
+            writer.WriteStringValue(value.ToString());
         }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Globalization;
 using System.Threading.Tasks;
 using RestSharp;
@@ -97,17 +98,24 @@ namespace SplitwiseClient
         /// <summary>
         ///     Return expenses involving the current user, in reverse chronological order
         ///     Sends a GET request to https://secure.splitwise.com/api/v3.0/get_expenses
-        ///     TODO: add all query params when documentation gets better, it currently doesn't show anything
         ///     https://dev.splitwise.com/#expenses
+        ///     All parameters are optional. Calling this endpoint with no parameters will return the 20 most recent expenses for
+        ///     the user.
+        ///     The server sets arbitrary (but large) limits on the number of expenses returned if you set a limit of 0 for a user
+        ///     with a lot of expenses
         /// </summary>
-        /// <param name="groupId">group_id query parameter</param>
-        /// <param name="friendId">friend_id query parameter</param>
-        /// <param name="visible">visible query parameter</param>
-        /// <param name="order">order query parameter</param>
+        /// <param name="groupId">Return expenses for specific group</param>
+        /// <param name="friendId">Return expenses for a specific friend that are not in any group</param>
+        /// <param name="datedAfter">ISO 8601 Date time. Return expenses later than this date</param>
+        /// <param name="datedBefore">ISO 8601 Date time. Return expenses earlier than this date</param>
+        /// <param name="updatedAfter">ISO 8601 Date time. Return expenses updated after this date</param>
+        /// <param name="updatedBefore"> 	ISO 8601 Date time. Return expenses updated before this date</param>
         /// <param name="limit">limit query parameter (defaults to 20; set to 0 to fetch all)</param>
+        /// <param name="offset">Return expenses starting at limit * offset</param>
         /// <returns></returns>
-        public Task<ExpensesResponse> GetExpenses(int? groupId = null, int? friendId = null, bool? visible = null,
-            string? order = null, int limit = 20)
+        public Task<ExpensesResponse> GetExpenses(int? groupId = null, int? friendId = null,
+            DateTimeOffset? datedAfter = null, DateTimeOffset? datedBefore = null, DateTimeOffset? updatedAfter = null,
+            DateTimeOffset? updatedBefore = null, int limit = 20, int offset = 0)
         {
             var req = new RestRequest($"{Api}/get_expenses");
 
@@ -121,19 +129,35 @@ namespace SplitwiseClient
                 req.AddQueryParameter("friend_id", friendId.Value.ToString(CultureInfo.InvariantCulture));
             }
 
-            if (visible.HasValue)
+            if (datedAfter.HasValue)
             {
-                req.AddQueryParameter("visible", visible.ToString());
+                req.AddQueryParameter("dated_after", datedAfter.Value.ToString("o", CultureInfo.InvariantCulture));
             }
 
-            if (order != null)
+            if (datedBefore.HasValue)
             {
-                req.AddQueryParameter("order", order);
+                req.AddQueryParameter("dated_before", datedBefore.Value.ToString("o", CultureInfo.InvariantCulture));
+            }
+
+            if (updatedAfter.HasValue)
+            {
+                req.AddQueryParameter("updated_after", updatedAfter.Value.ToString("o", CultureInfo.InvariantCulture));
+            }
+
+            if (updatedBefore.HasValue)
+            {
+                req.AddQueryParameter("updated_before",
+                    updatedBefore.Value.ToString("o", CultureInfo.InvariantCulture));
             }
 
             if (limit != 20)
             {
                 req.AddQueryParameter("limit", limit.ToString(CultureInfo.InvariantCulture));
+            }
+
+            if (offset != 0)
+            {
+                req.AddQueryParameter("offset", offset.ToString(CultureInfo.InvariantCulture));
             }
 
             return _client.GetAsync<ExpensesResponse>(req);
