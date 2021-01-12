@@ -6,7 +6,7 @@ namespace YnabClient.Model.Transactions
 {
     public class Transactions
     {
-        [JsonPropertyName("transactions")] public List<SaveTransaction>? SaveTransactions { get; set; }
+        [JsonPropertyName("transactions")] public List<SaveTransaction> SaveTransactions { get; set; }
     }
 
     public class SaveTransaction
@@ -41,7 +41,7 @@ namespace YnabClient.Model.Transactions
         ///     Max Length: 50
         /// </summary>
         [JsonPropertyName("payee_name")]
-        public string? PayeeName { get; set; }
+        public string PayeeName { get; set; }
 
         /// <summary>
         ///     The category for the transaction. To configure a split transaction, you can specify null for category_id and
@@ -55,14 +55,14 @@ namespace YnabClient.Model.Transactions
         ///     Max Length: 200
         /// </summary>
         [JsonPropertyName("memo")]
-        public string? Memo { get; set; }
+        public string Memo { get; set; }
 
         /// <summary>
         ///     The cleared status of the transaction
         ///     Enum: [ cleared, uncleared, reconciled ]
         /// </summary>
         [JsonPropertyName("cleared")]
-        public string? Cleared { get; set; }
+        public string Cleared { get; set; }
 
         /// <summary>
         ///     Whether or not the transaction is approved. If not supplied, transaction will be unapproved by default.
@@ -75,7 +75,7 @@ namespace YnabClient.Model.Transactions
         ///     Enum: [ red, orange, yellow, green, blue, purple, ]
         /// </summary>
         [JsonPropertyName("flag_color")]
-        public string? FlagColor { get; set; }
+        public string FlagColor { get; set; }
 
         /// <summary>
         ///     maxLength: 36
@@ -91,14 +91,14 @@ namespace YnabClient.Model.Transactions
         ///     such, it will be eligible to be matched against transactions later being imported (via DI, FBI, or API).
         /// </summary>
         [JsonPropertyName("import_id")]
-        public string? ImportId { get; set; }
+        public string ImportId { get; set; }
 
         /// <summary>
         ///     An array of subtransactions to configure a transaction as a split. Updating subtransactions on an existing split
         ///     transaction is not supported.
         /// </summary>
         [JsonPropertyName("subtransactions")]
-        public List<SaveSubTransaction>? SubTransactions { get; set; }
+        public List<SaveSubTransaction> SubTransactions { get; set; }
     }
 
     public class SaveSubTransaction
@@ -122,7 +122,7 @@ namespace YnabClient.Model.Transactions
         ///     transaction) or (2) a payee with the same name or (3) creation of a new payee.
         /// </summary>
         [JsonPropertyName("payee_name")]
-        public string? PayeeName { get; set; }
+        public string PayeeName { get; set; }
 
         /// <summary>
         ///     The category for the subtransaction. Credit Card Payment categories are not permitted and will be ignored if
@@ -135,6 +135,6 @@ namespace YnabClient.Model.Transactions
         ///     maxLength: 200
         /// </summary>
         [JsonPropertyName("memo")]
-        public string? Memo { get; set; }
+        public string Memo { get; set; }
     }
 }

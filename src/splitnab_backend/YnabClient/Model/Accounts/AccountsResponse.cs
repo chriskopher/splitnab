@@ -4,6 +4,6 @@ namespace YnabClient.Model.Accounts
 {
     public class AccountsResponse
     {
-        [JsonPropertyName("data")] public AccountsModel? Data { get; set; }
+        [JsonPropertyName("data")] public AccountsModel Data { get; set; }
     }
 }

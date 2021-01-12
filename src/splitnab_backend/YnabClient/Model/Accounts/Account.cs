@@ -6,7 +6,7 @@ namespace YnabClient.Model.Accounts
     public class Account
     {
         [JsonPropertyName("id")] public Guid Id { get; set; }
-        [JsonPropertyName("name")] public string? Name { get; set; }
+        [JsonPropertyName("name")] public string Name { get; set; }
 
         /// <summary>
         ///     The type of account. Note: payPal, merchantAccount, investmentAccount, and mortgage types have been deprecated and
@@ -15,7 +15,7 @@ namespace YnabClient.Model.Accounts
         ///     investmentAccount, mortgage ]
         /// </summary>
         [JsonPropertyName("type")]
-        public string? Type { get; set; }
+        public string Type { get; set; }
 
         /// <summary>
         ///     Whether this account is on budget or not
@@ -29,7 +29,7 @@ namespace YnabClient.Model.Accounts
         [JsonPropertyName("closed")]
         public bool Closed { get; set; }
 
-        [JsonPropertyName("note")] public string? Note { get; set; }
+        [JsonPropertyName("note")] public string Note { get; set; }
 
         /// <summary>
         ///     The current balance of the account in milliunits format
@@ -53,7 +53,7 @@ namespace YnabClient.Model.Accounts
         ///     The payee id which should be used when transferring to this account
         /// </summary>
         [JsonPropertyName("transfer_payee_id")]
-        public string? TransferPayeeId { get; set; }
+        public string TransferPayeeId { get; set; }
 
         /// <summary>
         ///     Whether or not the account has been deleted. Deleted accounts will only be included in delta requests.

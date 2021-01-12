@@ -5,6 +5,6 @@ namespace SplitwiseClient.Model.Expenses
 {
     public class ExpensesResponse
     {
-        [JsonPropertyName("expenses")] public List<Expense>? Expenses { get; set; }
+        [JsonPropertyName("expenses")] public List<Expense> Expenses { get; set; }
     }
 }

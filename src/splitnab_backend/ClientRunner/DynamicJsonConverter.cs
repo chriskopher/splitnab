@@ -35,7 +35,7 @@ namespace ClientRunner
 
         private object ReadObject(JsonElement jsonElement)
         {
-            IDictionary<string, object?> expandoObject = new ExpandoObject();
+            IDictionary<string, object> expandoObject = new ExpandoObject();
             foreach (var obj in jsonElement.EnumerateObject())
             {
                 var k = obj.Name;
@@ -46,7 +46,7 @@ namespace ClientRunner
             return expandoObject;
         }
 
-        private object? ReadValue(JsonElement jsonElement)
+        private object ReadValue(JsonElement jsonElement)
         {
             return jsonElement.ValueKind switch
             {
@@ -58,13 +58,13 @@ namespace ClientRunner
                 JsonValueKind.False => false,
                 JsonValueKind.Undefined => null,
                 JsonValueKind.Null => null,
-                _ => throw new ArgumentOutOfRangeException()
+                _ => throw new ArgumentOutOfRangeException(nameof(jsonElement))
             };
         }
 
-        private object? ReadList(JsonElement jsonElement)
+        private object ReadList(JsonElement jsonElement)
         {
-            var list = new List<object?>();
+            var list = new List<object>();
             jsonElement.EnumerateArray().ToList().ForEach(j => list.Add(ReadValue(j)));
             return list.Count == 0 ? null : list;
         }

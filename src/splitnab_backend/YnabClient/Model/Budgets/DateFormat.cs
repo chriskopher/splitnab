@@ -8,6 +8,6 @@ namespace YnabClient.Model.Budgets
     /// </summary>
     public class DateFormat
     {
-        [JsonPropertyName("format")] public string? Format { get; set; }
+        [JsonPropertyName("format")] public string Format { get; set; }
     }
 }

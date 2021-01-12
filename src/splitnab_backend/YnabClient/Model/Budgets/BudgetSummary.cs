@@ -8,7 +8,7 @@ namespace YnabClient.Model.Budgets
     public class BudgetSummary
     {
         [JsonPropertyName("id")] public Guid Id { get; set; }
-        [JsonPropertyName("name")] public string? Name { get; set; }
+        [JsonPropertyName("name")] public string Name { get; set; }
 
         /// <summary>
         ///     The last time any changes were made to the budget from either a web or mobile client
@@ -28,14 +28,14 @@ namespace YnabClient.Model.Budgets
         [JsonPropertyName("last_month")]
         public DateTime LastMonth { get; set; }
 
-        [JsonPropertyName("date_format")] public DateFormat? DateFormat { get; set; }
-        [JsonPropertyName("currency_format")] public CurrencyFormat? CurrencyFormat { get; set; }
+        [JsonPropertyName("date_format")] public DateFormat DateFormat { get; set; }
+        [JsonPropertyName("currency_format")] public CurrencyFormat CurrencyFormat { get; set; }
 
         /// <summary>
         ///     The budget accounts (only included if include_accounts=true specified as query parameter)
         /// </summary>
         /// <returns></returns>
         [JsonPropertyName("accounts")]
-        public List<Account>? Accounts { get; set; }
+        public List<Account> Accounts { get; set; }
     }
 }

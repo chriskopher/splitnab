@@ -4,6 +4,6 @@ namespace YnabClient.Model.Categories
 {
     public class CategoriesResponse
     {
-        [JsonPropertyName("data")] public CategoryModel? Data { get; set; }
+        [JsonPropertyName("data")] public CategoryModel Data { get; set; }
     }
 }

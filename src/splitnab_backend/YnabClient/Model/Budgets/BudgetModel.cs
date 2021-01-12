@@ -5,7 +5,7 @@ namespace YnabClient.Model.Budgets
 {
     public class BudgetModel
     {
-        [JsonPropertyName("budgets")] public List<BudgetSummary>? Budgets { get; set; }
-        [JsonPropertyName("default_budget")] public BudgetSummary? DefaultBudget { get; set; }
+        [JsonPropertyName("budgets")] public List<BudgetSummary> Budgets { get; set; }
+        [JsonPropertyName("default_budget")] public BudgetSummary DefaultBudget { get; set; }
     }
 }

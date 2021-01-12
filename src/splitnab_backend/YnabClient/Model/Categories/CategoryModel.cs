@@ -5,7 +5,7 @@ namespace YnabClient.Model.Categories
 {
     public class CategoryModel
     {
-        [JsonPropertyName("category_groups")] public List<CategoryGroupWithCategories>? CategoryGroups { get; set; }
+        [JsonPropertyName("category_groups")] public List<CategoryGroupWithCategories> CategoryGroups { get; set; }
 
         /// <summary>
         ///     The knowledge of the server

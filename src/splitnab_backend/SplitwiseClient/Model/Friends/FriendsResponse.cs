@@ -5,6 +5,6 @@ namespace SplitwiseClient.Model.Friends
 {
     public class FriendsResponse
     {
-        [JsonPropertyName("friends")] public List<FriendModel>? Friends { get; set; }
+        [JsonPropertyName("friends")] public List<FriendModel> Friends { get; set; }
     }
 }

@@ -7,6 +7,6 @@ namespace SplitwiseClient.Model.Friends
     public class FriendGroup
     {
         [JsonPropertyName("group_id")] public int Id { get; set; }
-        [JsonPropertyName("balance")] public List<Balance>? Balance { get; set; }
+        [JsonPropertyName("balance")] public List<Balance> Balance { get; set; }
     }
 }

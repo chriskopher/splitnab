@@ -10,7 +10,7 @@ namespace YnabClient.Model.Categories
         [JsonPropertyName("category_group_id")]
         public Guid CategoryGroupId { get; set; }
 
-        [JsonPropertyName("name")] public string? Name { get; set; }
+        [JsonPropertyName("name")] public string Name { get; set; }
 
         /// <summary>
         ///     Whether or not the category is hidden
@@ -24,7 +24,7 @@ namespace YnabClient.Model.Categories
         [JsonPropertyName("original_category_group_id")]
         public Guid? OriginalCategoryGroupId { get; set; }
 
-        [JsonPropertyName("note")] public string? Note { get; set; }
+        [JsonPropertyName("note")] public string Note { get; set; }
 
         /// <summary>
         ///     Budgeted amount in milliunits format
@@ -50,7 +50,7 @@ namespace YnabClient.Model.Categories
         ///     Enum: [ TB, TBD, MF, NEED, ]
         /// </summary>
         [JsonPropertyName("goal_type")]
-        public string? GoalType { get; set; }
+        public string GoalType { get; set; }
 
         /// <summary>
         ///     The month a goal was created

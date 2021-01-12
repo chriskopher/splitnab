@@ -7,7 +7,7 @@ namespace YnabClient.Model.Categories
     public class CategoryGroupWithCategories
     {
         [JsonPropertyName("id")] public Guid Id { get; set; }
-        [JsonPropertyName("name")] public string? Name { get; set; }
+        [JsonPropertyName("name")] public string Name { get; set; }
 
         /// <summary>
         ///     Whether or not the category group is hidden
@@ -27,6 +27,6 @@ namespace YnabClient.Model.Categories
         ///     (UTC).
         /// </summary>
         [JsonPropertyName("categories")]
-        public List<Category>? Categories { get; set; }
+        public List<Category> Categories { get; set; }
     }
 }

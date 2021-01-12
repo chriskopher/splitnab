@@ -5,6 +5,6 @@ namespace SplitwiseClient.Model.ApiResponse
 {
     public class ErrorsResponse
     {
-        [JsonPropertyName("errors")] public List<string>? Errors { get; set; }
+        [JsonPropertyName("errors")] public List<string> Errors { get; set; }
     }
 }

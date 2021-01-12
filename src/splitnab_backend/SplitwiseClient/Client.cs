@@ -31,7 +31,7 @@ namespace SplitwiseClient
         ///     Get an access token from the OAuth server.
         /// </summary>
         /// <returns>The access token.</returns>
-        public Task<AccessToken> GetAuthorizationToken()
+        private Task<AccessToken> GetAuthorizationToken()
         {
             var req = new RestRequest("oauth/token");
             req.AddHeader("Accept", "application/json");
@@ -47,12 +47,9 @@ namespace SplitwiseClient
         ///     Set the default access token to be used on each request. If the token is null, no action is performed.
         /// </summary>
         /// <param name="token">The access token to be set as the default</param>
-        public void SetAuthorizationToken(AccessToken token)
+        private void SetAuthorizationToken(AccessToken token)
         {
-            if (token != null)
-            {
-                _client.AddDefaultHeader("Authorization", $"Bearer {token.Token}");
-            }
+            _client.AddDefaultHeader("Authorization", $"Bearer {token.Token}");
         }
 
         public async Task ConfigureAccessToken()

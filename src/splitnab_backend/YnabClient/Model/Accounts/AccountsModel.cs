@@ -5,7 +5,7 @@ namespace YnabClient.Model.Accounts
 {
     public class AccountsModel
     {
-        [JsonPropertyName("accounts")] public List<Account>? Accounts { get; set; }
+        [JsonPropertyName("accounts")] public List<Account> Accounts { get; set; }
 
         /// <summary>
         ///     The knowledge of the server
