@@ -114,12 +114,17 @@ namespace ClientRunner
             }
 
             var cost = Convert.ToDouble(expense.Cost);
-            cost /= 2; // Assume equal 2-way split
-            cost *= 1000; // Convert to milli-units
+            if (expense.CreationMethod != "payment") // Don't split (re)payment transactions
+            {
+                cost /= 2; // Otherwise, assume equal 2-way split
+            }
+
             if (expense.Repayments[0].From == currentUserId)
             {
                 cost = -cost;
             }
+
+            cost *= 1000; // Convert to milli-units
 
             return Convert.ToInt64(cost);
         }
