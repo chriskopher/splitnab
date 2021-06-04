@@ -7,7 +7,7 @@ using SplitwiseClient;
 using SplitwiseClient.Model.Expenses;
 using YnabClient.Model.Transactions;
 
-namespace ClientRunner
+namespace Splitnab
 {
     internal static class Program
     {

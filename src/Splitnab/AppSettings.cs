@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 
-namespace ClientRunner
+namespace Splitnab
 {
     public class AppSettings
     {

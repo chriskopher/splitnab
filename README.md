@@ -69,7 +69,7 @@ populate with the following contents:
 
 ## Running the Tool
 
-Run the program in the `ClientRunner` project and your transactions from Splitwise will be imported to your YNAB budget.
+Run the program in the `Splitnab` project and your transactions from Splitwise will be imported to your YNAB budget.
 This can be automated with a cron job or similar.
 
 At this point the YNAB transactions can be categorized and approved.
