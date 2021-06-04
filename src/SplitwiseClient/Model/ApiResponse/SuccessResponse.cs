@@ -2,7 +2,7 @@
 
 namespace SplitwiseClient.Model.ApiResponse
 {
-    public class SuccessResponse
+    public record SuccessResponse
     {
         [JsonPropertyName("success")] public bool Success { get; set; }
     }

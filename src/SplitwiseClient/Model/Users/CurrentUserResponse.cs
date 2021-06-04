@@ -2,7 +2,7 @@
 
 namespace SplitwiseClient.Model.Users
 {
-    public class CurrentUserResponse
+    public record CurrentUserResponse
     {
         [JsonPropertyName("user")] public User User { get; set; }
     }

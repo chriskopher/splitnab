@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace YnabClient.Model.Accounts
 {
-    public class AccountsModel
+    public record AccountsModel
     {
         [JsonPropertyName("accounts")] public List<Account> Accounts { get; set; }
 

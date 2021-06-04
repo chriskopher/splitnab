@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace SplitwiseClient.Model.ApiResponse
 {
-    public class ErrorsResponse
+    public record ErrorsResponse
     {
         [JsonPropertyName("errors")] public List<string> Errors { get; set; }
     }

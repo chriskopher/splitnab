@@ -2,7 +2,7 @@
 
 namespace SplitwiseClient.Model.Groups
 {
-    public class Debt
+    public record Debt
     {
         [JsonPropertyName("from")] public int? From { get; set; }
         [JsonPropertyName("to")] public int? To { get; set; }

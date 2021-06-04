@@ -5,7 +5,7 @@ namespace SplitwiseClient.Model.Users
     /// <summary>
     ///     Image URLs
     /// </summary>
-    public class Picture
+    public record Picture
     {
         [JsonPropertyName("small")] public string Small { get; set; }
         [JsonPropertyName("medium")] public string Medium { get; set; }

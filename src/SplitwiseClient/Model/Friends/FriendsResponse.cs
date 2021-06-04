@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace SplitwiseClient.Model.Friends
 {
-    public class FriendsResponse
+    public record FriendsResponse
     {
         [JsonPropertyName("friends")] public List<FriendModel> Friends { get; set; }
     }

@@ -4,12 +4,12 @@ using System.Text.Json.Serialization;
 
 namespace YnabClient.Model.Transactions
 {
-    public class Transactions
+    public record Transactions
     {
         [JsonPropertyName("transactions")] public List<SaveTransaction> SaveTransactions { get; set; }
     }
 
-    public class SaveTransaction
+    public record SaveTransaction
     {
         [JsonPropertyName("account_id")] public Guid? AccountId { get; set; }
 
@@ -101,7 +101,7 @@ namespace YnabClient.Model.Transactions
         public List<SaveSubTransaction> SubTransactions { get; set; }
     }
 
-    public class SaveSubTransaction
+    public record SaveSubTransaction
     {
         /// <summary>
         ///     The subtransaction amount in milliunits format.

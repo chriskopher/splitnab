@@ -2,12 +2,12 @@
 
 namespace YnabClient.Model.ApiResponse
 {
-    public class ErrorResponse
+    public record ErrorResponse
     {
         [JsonPropertyName("error")] public ErrorDetail ErrorDetail { get; set; }
     }
 
-    public class ErrorDetail
+    public record ErrorDetail
     {
         [JsonPropertyName("id")] public string Id { get; set; }
         [JsonPropertyName("name")] public string Name { get; set; }

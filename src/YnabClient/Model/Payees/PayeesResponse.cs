@@ -2,7 +2,7 @@
 
 namespace YnabClient.Model.Payees
 {
-    public class PayeesResponse
+    public record PayeesResponse
     {
         [JsonPropertyName("data")] public PayeeModel Data { get; set; }
     }

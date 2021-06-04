@@ -5,7 +5,7 @@ using SplitwiseClient.Model.Users;
 
 namespace SplitwiseClient.Model.Expenses
 {
-    public class Expense
+    public record Expense
     {
         [JsonPropertyName("id")] public int Id { get; set; }
         [JsonPropertyName("group_id")] public int? GroupId { get; set; }
@@ -45,7 +45,7 @@ namespace SplitwiseClient.Model.Expenses
         [JsonPropertyName("users")] public List<Users> Users { get; set; }
     }
 
-    public class Users
+    public record Users
     {
         [JsonPropertyName("users")] public User User { get; set; }
 

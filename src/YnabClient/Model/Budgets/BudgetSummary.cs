@@ -5,7 +5,7 @@ using YnabClient.Model.Accounts;
 
 namespace YnabClient.Model.Budgets
 {
-    public class BudgetSummary
+    public record BudgetSummary
     {
         [JsonPropertyName("id")] public Guid Id { get; set; }
         [JsonPropertyName("name")] public string Name { get; set; }

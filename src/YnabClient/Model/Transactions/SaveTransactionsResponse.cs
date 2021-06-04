@@ -4,12 +4,12 @@ using System.Text.Json.Serialization;
 
 namespace YnabClient.Model.Transactions
 {
-    public class SaveTransactionsResponse
+    public record SaveTransactionsResponse
     {
         [JsonPropertyName("data")] public SaveTransactionsModel Data { get; set; }
     }
 
-    public class SaveTransactionsModel
+    public record SaveTransactionsModel
     {
         /// <summary>
         ///     The transaction ids that were saved
@@ -43,7 +43,7 @@ namespace YnabClient.Model.Transactions
         public long ServerKnowledge { get; set; }
     }
 
-    public class TransactionDetail
+    public record TransactionDetail
     {
         [JsonPropertyName("id")] public string Id { get; set; }
 

@@ -2,7 +2,7 @@
 
 namespace YnabClient.Model.User
 {
-    public class UserModel
+    public record UserModel
     {
         [JsonPropertyName("user")] public User User { get; set; }
     }

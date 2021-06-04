@@ -2,7 +2,7 @@
 
 namespace YnabClient.Model.Categories
 {
-    public class CategoriesResponse
+    public record CategoriesResponse
     {
         [JsonPropertyName("data")] public CategoryModel Data { get; set; }
     }

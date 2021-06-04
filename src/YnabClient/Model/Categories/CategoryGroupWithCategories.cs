@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace YnabClient.Model.Categories
 {
-    public class CategoryGroupWithCategories
+    public record CategoryGroupWithCategories
     {
         [JsonPropertyName("id")] public Guid Id { get; set; }
         [JsonPropertyName("name")] public string Name { get; set; }

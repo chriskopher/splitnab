@@ -4,7 +4,7 @@ using SplitwiseClient.Model.Users;
 
 namespace SplitwiseClient.Model.Friends
 {
-    public class FriendGroup
+    public record FriendGroup
     {
         [JsonPropertyName("group_id")] public int Id { get; set; }
         [JsonPropertyName("balance")] public List<Balance> Balance { get; set; }

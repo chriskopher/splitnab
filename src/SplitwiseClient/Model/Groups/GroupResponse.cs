@@ -2,7 +2,7 @@
 
 namespace SplitwiseClient.Model.Groups
 {
-    public class GroupResponse
+    public record GroupResponse
     {
         [JsonPropertyName("group")] public Group Group { get; set; }
     }

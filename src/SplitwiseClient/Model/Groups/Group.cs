@@ -5,7 +5,7 @@ using SplitwiseClient.Model.Users;
 
 namespace SplitwiseClient.Model.Groups
 {
-    public class Group
+    public record Group
     {
         [JsonPropertyName("id")] public int GroupId { get; set; }
         [JsonPropertyName("name")] public string Name { get; set; }

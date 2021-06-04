@@ -2,7 +2,7 @@
 
 namespace YnabClient.Model.Budgets
 {
-    public class BudgetSummaryResponse
+    public record BudgetSummaryResponse
     {
         [JsonPropertyName("data")] public BudgetModel Data { get; set; }
     }

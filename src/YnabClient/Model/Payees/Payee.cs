@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace YnabClient.Model.Payees
 {
-    public class Payee
+    public record Payee
     {
         [JsonPropertyName("id")] public Guid Id { get; set; }
         [JsonPropertyName("name")] public string Name { get; set; }

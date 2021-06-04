@@ -2,7 +2,7 @@
 
 namespace SplitwiseClient.Model.Expenses
 {
-    public class Repayment
+    public record Repayment
     {
         [JsonPropertyName("from")] public int From { get; set; }
         [JsonPropertyName("to")] public int To { get; set; }

@@ -5,7 +5,7 @@ namespace SplitwiseClient.Model.Users
     /// <summary>
     ///     Notification preferences.
     /// </summary>
-    public class Notifications
+    public record Notifications
     {
         [JsonPropertyName("added_as_friend")] public bool AddedAsFriend { get; set; }
         [JsonPropertyName("added_to_group")] public bool AddedToGroup { get; set; }

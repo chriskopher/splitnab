@@ -6,7 +6,7 @@ namespace YnabClient.Model.Budgets
     ///     The currency format setting for the budget. In some cases the format will not be available and will be specified as
     ///     null.
     /// </summary>
-    public class CurrencyFormat
+    public record CurrencyFormat
     {
         [JsonPropertyName("iso_code")] public string IsoCode { get; set; }
         [JsonPropertyName("example_format")] public string ExampleFormat { get; set; }

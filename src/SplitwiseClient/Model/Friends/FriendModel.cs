@@ -5,7 +5,7 @@ using SplitwiseClient.Model.Users;
 
 namespace SplitwiseClient.Model.Friends
 {
-    public class FriendModel
+    public record FriendModel
     {
         [JsonPropertyName("id")] public int Id { get; set; }
         [JsonPropertyName("first_name")] public string FirstName { get; set; }

@@ -2,7 +2,7 @@
 
 namespace SplitwiseClient.Model.Friends
 {
-    public class FriendResponse
+    public record FriendResponse
     {
         [JsonPropertyName("friend")] public FriendModel Friend { get; set; }
     }
