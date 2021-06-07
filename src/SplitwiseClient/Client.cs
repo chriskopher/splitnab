@@ -16,11 +16,18 @@ namespace SplitwiseClient
         private const string Url = "https://secure.splitwise.com";
         private const string Api = Url + "/api/v3.0";
 
-        private readonly RestClient _client = new(Url);
+        private readonly IRestClient _restClient;
 
-        public Client()
+        public Client(IRestClient restClient)
         {
-            _client.UseSystemTextJson();
+            _restClient = restClient;
+            if (_restClient == null)
+            {
+                throw new ArgumentNullException(nameof(restClient));
+            }
+
+            _restClient.BaseUrl = new Uri(Url);
+            _restClient.UseSystemTextJson();
         }
 
         public async Task ConfigureAccessToken(string consumerKey, string consumerSecret)
@@ -43,7 +50,7 @@ namespace SplitwiseClient
             req.AddParameter("client_secret", consumerSecret);
             req.AddParameter("grant_type", "client_credentials");
 
-            return await _client.PostAsync<AccessToken>(req);
+            return await _restClient.PostAsync<AccessToken>(req);
         }
 
         /// <summary>
@@ -52,19 +59,19 @@ namespace SplitwiseClient
         /// <param name="token">The access token to be set as the default</param>
         private void SetAuthorizationToken(AccessToken token)
         {
-            _client.AddDefaultHeader("Authorization", $"Bearer {token.Token}");
+            _restClient.AddDefaultHeader("Authorization", $"Bearer {token.Token}");
         }
 
         public async Task<CurrentUserResponse> GetCurrentUser()
         {
             var req = new RestRequest($"{Api}/get_current_user", DataFormat.Json);
-            return await _client.GetAsync<CurrentUserResponse>(req);
+            return await _restClient.GetAsync<CurrentUserResponse>(req);
         }
 
         public async Task<FriendsResponse> GetFriends()
         {
             var req = new RestRequest($"{Api}/get_friends", DataFormat.Json);
-            return await _client.GetAsync<FriendsResponse>(req);
+            return await _restClient.GetAsync<FriendsResponse>(req);
         }
 
         public async Task<ExpensesResponse> GetExpenses(int? groupId = null, int? friendId = null,
@@ -114,7 +121,7 @@ namespace SplitwiseClient
                 req.AddQueryParameter("offset", offset.ToString(CultureInfo.InvariantCulture));
             }
 
-            return await _client.GetAsync<ExpensesResponse>(req);
+            return await _restClient.GetAsync<ExpensesResponse>(req);
         }
     }
 }

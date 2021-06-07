@@ -3,18 +3,19 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
+    <nullable>enable</nullable>
     <AssemblyName>splitnab</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1"/>
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0"/>
-    <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.21216.1"/>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
+    <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.21216.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SplitwiseClient\SplitwiseClient.csproj"/>
-    <ProjectReference Include="..\YnabClient\YnabClient.csproj"/>
+    <ProjectReference Include="..\SplitwiseClient\SplitwiseClient.csproj" />
+    <ProjectReference Include="..\YnabClient\YnabClient.csproj" />
   </ItemGroup>
 
   <ItemGroup>

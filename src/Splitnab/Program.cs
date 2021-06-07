@@ -1,4 +1,5 @@
-﻿using System.CommandLine;
+﻿using System;
+using System.CommandLine;
 using System.CommandLine.Builder;
 using System.CommandLine.Invocation;
 using System.CommandLine.Parsing;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using RestSharp;
 using SplitwiseClient;
 using YnabClient;
 
@@ -51,17 +53,20 @@ namespace Splitnab
                     logging.AddSimpleConsole();
                 })
                 .ConfigureServices((_, services) =>
-                    services.AddSingleton<ISplitwiseClient, SplitwiseClient.Client>()
+                    services.AddTransient<IRestClient, RestClient>()
+                        .AddSingleton<ISplitwiseClient, SplitwiseClient.Client>()
                         .AddSingleton<IYnabClient, YnabClient.Client>()
                         .AddSingleton<Splitnab>());
 
         private static async Task<AppSettings> ParseAppSettings(string appsettingsFile)
         {
-            var serializerOptions = new JsonSerializerOptions {Converters = {new DynamicJsonConverter()}};
-            var appSettings = await File.ReadAllTextAsync(appsettingsFile);
-            var json = JsonSerializer.Deserialize<dynamic>(appSettings, serializerOptions);
+            await using var fileStream = File.OpenRead(appsettingsFile);
 
-            return new AppSettings(json);
+            var options = new JsonSerializerOptions {PropertyNameCaseInsensitive = true};
+
+            return await JsonSerializer.DeserializeAsync<AppSettings>(fileStream, options)
+                   ?? throw new ArgumentException(
+                       "Provided appsettings.json file deserialized to null. Ensure this file has the correct format.");
         }
     }
 }

@@ -3,4 +3,6 @@
 bin/
 obj/
 
+*.DotSettings.user
+
 appsettings.json

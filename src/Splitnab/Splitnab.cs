@@ -24,8 +24,9 @@ namespace Splitnab
 
         public async Task Run(AppSettings settings, bool dryRun)
         {
-            await _splitwiseClient.ConfigureAccessToken(settings.SwConsumerKey, settings.SwConsumerSecret);
-            _ynabClient.ConfigureAuthorization(settings.YnabPersonalAccessToken);
+            await _splitwiseClient.ConfigureAccessToken(settings.Splitwise.ConsumerKey,
+                settings.Splitwise.ConsumerSecret);
+            _ynabClient.ConfigureAuthorization(settings.Ynab.PersonalAccessToken);
 
             // 1. Get desired Splitwise expenses
             var currentUser = await _splitwiseClient.GetCurrentUser();
@@ -42,7 +43,7 @@ namespace Splitnab
                 return;
             }
 
-            var friend = friends.Friends.FirstOrDefault(x => x.Email == settings.SwFriendEmail);
+            var friend = friends.Friends.FirstOrDefault(x => x.Email == settings.Splitwise.FriendEmail);
             if (friend == null)
             {
                 _logger.LogWarning("Unable to find the specified Splitwise friend. Exiting...");
@@ -51,7 +52,7 @@ namespace Splitnab
 
             var expenses = await _splitwiseClient.GetExpenses(
                 friendId: friend.Id,
-                datedAfter: settings.SwTransactionsDatedAfter,
+                datedAfter: settings.Splitwise.TransactionsDatedAfter,
                 limit: 0);
             if (expenses.Expenses == null)
             {
@@ -67,7 +68,7 @@ namespace Splitnab
                 return;
             }
 
-            var ynabBudget = ynabBudgets.Data.Budgets.FirstOrDefault(x => x.Name == settings.YnabBudgetName);
+            var ynabBudget = ynabBudgets.Data.Budgets.FirstOrDefault(x => x.Name == settings.Ynab.BudgetName);
             if (ynabBudget == null)
             {
                 _logger.LogWarning("Unable to find YNAB budget. Exiting...");
@@ -76,11 +77,11 @@ namespace Splitnab
 
             var ynabBudgetAccounts = await _ynabClient.GetBudgetAccounts(ynabBudget.Id);
             var splitwiseAccount = ynabBudgetAccounts.Data?.Accounts?
-                .SingleOrDefault(x => x.Name == settings.YnabSplitwiseBudgetName);
+                .SingleOrDefault(x => x.Name == settings.Ynab.SplitwiseAccountName);
             if (splitwiseAccount == null)
             {
                 _logger.LogWarning(
-                    $"Unable to find YNAB splitwise account {settings.YnabBudgetName} in budget {settings.YnabBudgetName}. Exiting...");
+                    $"Unable to find YNAB splitwise account {settings.Ynab.SplitwiseAccountName} in budget {settings.Ynab.BudgetName}. Exiting...");
                 return;
             }
 
@@ -112,7 +113,7 @@ namespace Splitnab
             {
                 await _ynabClient.PostTransactions(ynabBudget.Id, transactionsToPost);
                 _logger.LogInformation(
-                    $"Successfully saved {transactionsToPost.SaveTransactions.Count} transactions from Splitwise to YNAB using budget {settings.YnabBudgetName} in the {settings.YnabSplitwiseBudgetName} account!");
+                    $"Successfully saved {transactionsToPost.SaveTransactions.Count} transactions from Splitwise to YNAB using budget {settings.Ynab.BudgetName} in the {settings.Ynab.SplitwiseAccountName} account!");
             }
         }
 
