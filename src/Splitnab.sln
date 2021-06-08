@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Splitnab", "Splitnab\Splitn
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YnabClient", "YnabClient\YnabClient.csproj", "{E0E49860-763C-41FB-B2F3-FBEC8392E9AE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SplitnabTest", "..\test\SplitnabTest\SplitnabTest.csproj", "{2E4340B2-21F0-42FB-B991-8975B0DE8139}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,5 +60,17 @@ Global
 		{E0E49860-763C-41FB-B2F3-FBEC8392E9AE}.Release|x64.Build.0 = Release|Any CPU
 		{E0E49860-763C-41FB-B2F3-FBEC8392E9AE}.Release|x86.ActiveCfg = Release|Any CPU
 		{E0E49860-763C-41FB-B2F3-FBEC8392E9AE}.Release|x86.Build.0 = Release|Any CPU
+		{2E4340B2-21F0-42FB-B991-8975B0DE8139}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E4340B2-21F0-42FB-B991-8975B0DE8139}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E4340B2-21F0-42FB-B991-8975B0DE8139}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{2E4340B2-21F0-42FB-B991-8975B0DE8139}.Debug|x64.Build.0 = Debug|Any CPU
+		{2E4340B2-21F0-42FB-B991-8975B0DE8139}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2E4340B2-21F0-42FB-B991-8975B0DE8139}.Debug|x86.Build.0 = Debug|Any CPU
+		{2E4340B2-21F0-42FB-B991-8975B0DE8139}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E4340B2-21F0-42FB-B991-8975B0DE8139}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E4340B2-21F0-42FB-B991-8975B0DE8139}.Release|x64.ActiveCfg = Release|Any CPU
+		{2E4340B2-21F0-42FB-B991-8975B0DE8139}.Release|x64.Build.0 = Release|Any CPU
+		{2E4340B2-21F0-42FB-B991-8975B0DE8139}.Release|x86.ActiveCfg = Release|Any CPU
+		{2E4340B2-21F0-42FB-B991-8975B0DE8139}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

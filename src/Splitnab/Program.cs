@@ -35,9 +35,9 @@ namespace Splitnab
                 async (appsettingsFile, dryRun) =>
                 {
                     using var host = CreateHostBuilder().Build();
-                    var splitnab = ActivatorUtilities.CreateInstance<Splitnab>(host.Services);
+                    var splitnabRunner = ActivatorUtilities.CreateInstance<SplitnabRunner>(host.Services);
 
-                    await splitnab.Run(await ParseAppSettings(appsettingsFile), dryRun);
+                    await splitnabRunner.Run(await ParseAppSettings(appsettingsFile), dryRun);
                 });
 
             return await new CommandLineBuilder(rootCommand)
@@ -56,7 +56,7 @@ namespace Splitnab
                     services.AddTransient<IRestClient, RestClient>()
                         .AddSingleton<ISplitwiseClient, SplitwiseClient.Client>()
                         .AddSingleton<IYnabClient, YnabClient.Client>()
-                        .AddSingleton<Splitnab>());
+                        .AddSingleton<SplitnabRunner>());
 
         private static async Task<AppSettings> ParseAppSettings(string appsettingsFile)
         {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -9,20 +10,20 @@ using YnabClient.Model.Transactions;
 
 namespace Splitnab
 {
-    public class Splitnab
+    public class SplitnabRunner
     {
-        private readonly ILogger<Splitnab> _logger;
+        private readonly ILogger<SplitnabRunner> _logger;
         private readonly ISplitwiseClient _splitwiseClient;
         private readonly IYnabClient _ynabClient;
 
-        public Splitnab(ILogger<Splitnab> logger, ISplitwiseClient splitwiseClient, IYnabClient ynabClient)
+        public SplitnabRunner(ILogger<SplitnabRunner> logger, ISplitwiseClient splitwiseClient, IYnabClient ynabClient)
         {
             _logger = logger;
             _splitwiseClient = splitwiseClient;
             _ynabClient = ynabClient;
         }
 
-        public async Task Run(AppSettings settings, bool dryRun)
+        public async Task<Transactions?> Run(AppSettings settings, bool dryRun)
         {
             await _splitwiseClient.ConfigureAccessToken(settings.Splitwise.ConsumerKey,
                 settings.Splitwise.ConsumerSecret);
@@ -33,21 +34,21 @@ namespace Splitnab
             if (currentUser.User == null)
             {
                 _logger.LogWarning("Unable to fetch the current Splitwise user. Exiting...");
-                return;
+                return null;
             }
 
             var friends = await _splitwiseClient.GetFriends();
             if (friends.Friends == null)
             {
                 _logger.LogWarning("Unable to fetch current user's Splitwise friends list. Exiting...");
-                return;
+                return null;
             }
 
             var friend = friends.Friends.FirstOrDefault(x => x.Email == settings.Splitwise.FriendEmail);
             if (friend == null)
             {
                 _logger.LogWarning("Unable to find the specified Splitwise friend. Exiting...");
-                return;
+                return null;
             }
 
             var expenses = await _splitwiseClient.GetExpenses(
@@ -57,7 +58,7 @@ namespace Splitnab
             if (expenses.Expenses == null)
             {
                 _logger.LogWarning("No Splitwise expenses found for the specified user and date range. Exiting...");
-                return;
+                return null;
             }
 
             // 2. Map them as YNAB transactions
@@ -65,14 +66,14 @@ namespace Splitnab
             if (ynabBudgets.Data?.Budgets == null)
             {
                 _logger.LogWarning("Unable to fetch YNAB budgets. Exiting...");
-                return;
+                return null;
             }
 
             var ynabBudget = ynabBudgets.Data.Budgets.FirstOrDefault(x => x.Name == settings.Ynab.BudgetName);
             if (ynabBudget == null)
             {
                 _logger.LogWarning("Unable to find YNAB budget. Exiting...");
-                return;
+                return null;
             }
 
             var ynabBudgetAccounts = await _ynabClient.GetBudgetAccounts(ynabBudget.Id);
@@ -81,8 +82,9 @@ namespace Splitnab
             if (splitwiseAccount == null)
             {
                 _logger.LogWarning(
-                    $"Unable to find YNAB splitwise account {settings.Ynab.SplitwiseAccountName} in budget {settings.Ynab.BudgetName}. Exiting...");
-                return;
+                    "Unable to find YNAB splitwise account {SplitwiseAccountName} in budget {YnabBudgetName}. Exiting...",
+                    settings.Ynab.SplitwiseAccountName, settings.Ynab.BudgetName);
+                return null;
             }
 
             var ynabTransactions = expenses.Expenses.Select(expense => new SaveTransaction
@@ -103,18 +105,22 @@ namespace Splitnab
             {
                 foreach (var transaction in transactionsToPost.SaveTransactions)
                 {
-                    _logger.LogInformation(transaction.ToString());
+                    _logger.LogInformation("{Transaction}", transaction.ToString());
                 }
 
                 _logger.LogInformation(
-                    "Dry run completed successfully. No transactions have been imported. To save transactions run without --dry-run flag.");
+                    "Dry run completed successfully. No transactions have been imported. To save transactions run without --dry-run flag");
             }
             else
             {
                 await _ynabClient.PostTransactions(ynabBudget.Id, transactionsToPost);
                 _logger.LogInformation(
-                    $"Successfully saved {transactionsToPost.SaveTransactions.Count} transactions from Splitwise to YNAB using budget {settings.Ynab.BudgetName} in the {settings.Ynab.SplitwiseAccountName} account!");
+                    "Successfully saved {NumberOfTransactions} transactions from Splitwise to YNAB using budget {YnabBudgetName} in the {YnabSplitwiseAccountName} account!",
+                    transactionsToPost.SaveTransactions.Count, settings.Ynab.BudgetName,
+                    settings.Ynab.SplitwiseAccountName);
             }
+
+            return transactionsToPost;
         }
 
         private long CalculateYnabAmount(Expense expense, int currentUserId)
@@ -122,11 +128,13 @@ namespace Splitnab
             if (expense.Repayments == null)
             {
                 _logger.LogWarning(
-                    $"Malformed Splitwise expense. Setting cost to 0 for {expense.Description} on {expense.Date}");
+                    "Malformed Splitwise expense. Setting cost to 0 for {ExpenseDescription} on {ExpenseDate}",
+                    expense.Description, expense.Date);
+
                 return 0;
             }
 
-            var cost = Convert.ToDouble(expense.Cost, System.Globalization.CultureInfo.InvariantCulture);
+            var cost = Convert.ToDouble(expense.Cost, CultureInfo.InvariantCulture);
             if (expense.CreationMethod != "payment") // Don't split (re)payment transactions
             {
                 cost /= 2; // Otherwise, assume equal 2-way split
