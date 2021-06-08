@@ -3,7 +3,7 @@
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
-namespace Splitnab
+namespace Splitnab.Model
 {
     /// <summary>
     /// Object graph for appsettings.json

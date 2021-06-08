@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using RestSharp;
+using Splitnab.Model;
 using SplitwiseClient;
 using YnabClient;
 
@@ -56,6 +57,7 @@ namespace Splitnab
                     services.AddTransient<IRestClient, RestClient>()
                         .AddSingleton<ISplitwiseClient, SplitwiseClient.Client>()
                         .AddSingleton<IYnabClient, YnabClient.Client>()
+                        .AddSingleton<IGetSplitwiseInfoOperation, GetSplitwiseInfoOperation>()
                         .AddSingleton<SplitnabRunner>());
 
         private static async Task<AppSettings> ParseAppSettings(string appsettingsFile)

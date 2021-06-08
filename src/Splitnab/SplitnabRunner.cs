@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using SplitwiseClient;
+using Splitnab.Model;
 using SplitwiseClient.Model.Expenses;
-using SplitwiseClient.Model.Friends;
-using SplitwiseClient.Model.Users;
 using YnabClient;
 using YnabClient.Model.Accounts;
 using YnabClient.Model.Budgets;
@@ -18,25 +15,24 @@ namespace Splitnab
     public class SplitnabRunner
     {
         private readonly ILogger<SplitnabRunner> _logger;
-        private readonly ISplitwiseClient _splitwiseClient;
+        private readonly IGetSplitwiseInfoOperation _getSplitwiseInfoOperation;
         private readonly IYnabClient _ynabClient;
 
-        public SplitnabRunner(ILogger<SplitnabRunner> logger, ISplitwiseClient splitwiseClient, IYnabClient ynabClient)
+        public SplitnabRunner(ILogger<SplitnabRunner> logger, IGetSplitwiseInfoOperation getSplitwiseInfoOperation,
+            IYnabClient ynabClient)
         {
             _logger = logger;
-            _splitwiseClient = splitwiseClient;
+            _getSplitwiseInfoOperation = getSplitwiseInfoOperation;
             _ynabClient = ynabClient;
         }
 
         public async Task<Transactions?> Run(AppSettings settings, bool dryRun)
         {
             // Setup authentication for clients
-            await _splitwiseClient.ConfigureAccessToken(settings.Splitwise.ConsumerKey,
-                settings.Splitwise.ConsumerSecret);
             _ynabClient.ConfigureAuthorization(settings.Ynab.PersonalAccessToken);
 
-            var (swSuccess, (swUser, swFriend, swExpenses)) = await CanGetSplitwiseInfo(settings);
-            if (!swSuccess)
+            var swInfo = await _getSplitwiseInfoOperation.Invoke(settings);
+            if (swInfo == null)
             {
                 _logger.LogError("Unable to fetch required Splitwise information");
                 _logger.LogInformation("Verify that the Splitwise section in appsettings.json is configured correctly");
@@ -52,13 +48,13 @@ namespace Splitnab
             }
 
             // Map expenses as YNAB transactions
-            var ynabTransactions = swExpenses.Select(expense => new SaveTransaction
+            var ynabTransactions = swInfo.Expenses.Select(expense => new SaveTransaction
             {
                 AccountId = ynabAccount.Id,
                 Date = expense.Date.GetValueOrDefault(),
-                Amount = CalculateYnabAmount(expense, swUser.Id),
+                Amount = CalculateYnabAmount(expense, swInfo.CurrentUser.Id),
                 PayeeName = string.Join(" ",
-                    new[] {swFriend.FirstName, swFriend.LastName}.Where(x => !string.IsNullOrWhiteSpace(x))),
+                    new[] {swInfo.Friend.FirstName, swInfo.Friend.LastName}.Where(x => !string.IsNullOrWhiteSpace(x))),
                 Memo = expense.Description,
                 Approved = false
             });
@@ -87,44 +83,6 @@ namespace Splitnab
             return transactionsToPost;
         }
 
-        private async Task<(bool success, (User, FriendModel, List<Expense>) info)> CanGetSplitwiseInfo(
-            AppSettings settings)
-        {
-            // Validate that required Splitwise information is retrievable
-            var currentUser = await _splitwiseClient.GetCurrentUser();
-            if (currentUser.User == null)
-            {
-                _logger.LogWarning("Unable to fetch the current Splitwise user");
-                return (false, (new User(), new FriendModel(), new List<Expense>()));
-            }
-
-            var friends = await _splitwiseClient.GetFriends();
-            if (friends.Friends == null)
-            {
-                _logger.LogWarning("Unable to fetch current user's Splitwise friends list");
-                return (false, (currentUser.User, new FriendModel(), new List<Expense>()));
-            }
-
-            var friend = friends.Friends?.FirstOrDefault(x => x.Email == settings.Splitwise.FriendEmail);
-            if (friend == null)
-            {
-                _logger.LogWarning("Unable to find the specified Splitwise friend");
-                return (false, (currentUser.User, new FriendModel(), new List<Expense>()));
-            }
-
-            // Get desired Splitwise expenses
-            var expenses = await _splitwiseClient.GetExpenses(
-                friendId: friend.Id,
-                datedAfter: settings.Splitwise.TransactionsDatedAfter,
-                limit: 0);
-            if (expenses.Expenses == null)
-            {
-                _logger.LogWarning("No Splitwise expenses found for the specified user and date range");
-                return (false, (currentUser.User, friend, new List<Expense>()));
-            }
-
-            return (true, (currentUser.User, friend, expenses.Expenses));
-        }
 
         private async Task<(bool success, (BudgetSummary, Account) info)> CanGetYnabInfo(AppSettings settings)
         {

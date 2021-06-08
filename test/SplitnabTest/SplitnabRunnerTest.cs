@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Splitnab;
-using SplitwiseClient;
+using Splitnab.Model;
 using SplitwiseClient.Model.Expenses;
 using SplitwiseClient.Model.Friends;
 using SplitwiseClient.Model.Users;
@@ -19,7 +19,7 @@ namespace SplitnabTest
     public class SplitnabRunnerTest
     {
         private readonly ILogger<SplitnabRunner> _logger;
-        private readonly ISplitwiseClient _splitwiseClient;
+        private readonly IGetSplitwiseInfoOperation _getSplitwiseInfoOperation;
         private readonly IYnabClient _ynabClient;
 
         private SplitnabRunner _sut;
@@ -27,12 +27,12 @@ namespace SplitnabTest
         public SplitnabRunnerTest()
         {
             _logger = Substitute.For<ILogger<SplitnabRunner>>();
-            _splitwiseClient = Substitute.For<ISplitwiseClient>();
+            _getSplitwiseInfoOperation = Substitute.For<IGetSplitwiseInfoOperation>();
             _ynabClient = Substitute.For<IYnabClient>();
         }
 
         [Fact]
-        public async Task Run_WithCorrectValues_ReturnsExpected()
+        public async Task RunWithCorrectValuesForSplitwiseLendingReturnsExpected()
         {
             // Arrange
             var appSettings = new AppSettings
@@ -52,33 +52,23 @@ namespace SplitnabTest
                 }
             };
 
-            var expectedUser = new CurrentUserResponse {User = new User {Id = 1}};
-            _splitwiseClient.GetCurrentUser().Returns(expectedUser);
-
-            var expectedFriends = new FriendsResponse
+            var expenseDate = DateTime.Now;
+            var expectedSplitwiseInfo = new SplitwiseInfo
             {
-                Friends = new List<FriendModel> {new() {Email = "friendEmail", FirstName = "firstName", Id = 123}}
-            };
-            _splitwiseClient.GetFriends().Returns(expectedFriends);
-
-            var expectedExpenseDate = DateTime.Now.AddDays(1);
-            var expectedExpenses = new ExpensesResponse
-            {
+                CurrentUser = new User {Id = 1, FirstName = "firstName"},
+                Friend = new FriendModel {Id = 2, FirstName = "friendName", Email = "friendEmail"},
                 Expenses = new List<Expense>
                 {
                     new()
                     {
-                        Cost = "123.45",
-                        CreationMethod = "payment",
-                        Date = expectedExpenseDate,
+                        Cost = "123450",
+                        Date = expenseDate,
                         Description = "expensive",
-                        Repayments = new List<Repayment> {new() {From = 123}}
+                        Repayments = new List<Repayment> {new() {From = 2}}
                     }
                 }
             };
-            _splitwiseClient
-                .GetExpenses(friendId: 123, datedAfter: appSettings.Splitwise.TransactionsDatedAfter, limit: 0)
-                .Returns(expectedExpenses);
+            _getSplitwiseInfoOperation.Invoke(appSettings).Returns(expectedSplitwiseInfo);
 
             var expectedYnabBudgetGuid = Guid.NewGuid();
             var expectedBudgets = new BudgetSummaryResponse
@@ -110,9 +100,9 @@ namespace SplitnabTest
                     new()
                     {
                         AccountId = expectedYnabBudgetAccountGuid,
-                        Date = expectedExpenseDate,
-                        Amount = 123450,
-                        PayeeName = "firstName",
+                        Date = expenseDate,
+                        Amount = 61725000,
+                        PayeeName = "friendName",
                         Memo = "expensive",
                         Approved = false
                     }
@@ -120,7 +110,7 @@ namespace SplitnabTest
             };
 
             // Act
-            _sut = new SplitnabRunner(_logger, _splitwiseClient, _ynabClient);
+            _sut = new SplitnabRunner(_logger, _getSplitwiseInfoOperation, _ynabClient);
             var result = await _sut.Run(appSettings, true);
 
             // Assert
