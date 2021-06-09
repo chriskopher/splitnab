@@ -20,6 +20,7 @@ namespace SplitnabTest
     {
         private readonly ILogger<SplitnabRunner> _logger;
         private readonly IGetSplitwiseInfoOperation _getSplitwiseInfoOperation;
+        private readonly IGetYnabInfoOperation _getYnabInfoOperation;
         private readonly IYnabClient _ynabClient;
 
         private SplitnabRunner _sut;
@@ -28,6 +29,7 @@ namespace SplitnabTest
         {
             _logger = Substitute.For<ILogger<SplitnabRunner>>();
             _getSplitwiseInfoOperation = Substitute.For<IGetSplitwiseInfoOperation>();
+            _getYnabInfoOperation = Substitute.For<IGetYnabInfoOperation>();
             _ynabClient = Substitute.For<IYnabClient>();
         }
 
@@ -53,7 +55,7 @@ namespace SplitnabTest
             };
 
             var expenseDate = DateTime.Now;
-            var expectedSplitwiseInfo = new SplitwiseInfo
+            var splitwiseInfo = new SplitwiseInfo
             {
                 CurrentUser = new User {Id = 1, FirstName = "firstName"},
                 Friend = new FriendModel {Id = 2, FirstName = "friendName", Email = "friendEmail"},
@@ -68,30 +70,15 @@ namespace SplitnabTest
                     }
                 }
             };
-            _getSplitwiseInfoOperation.Invoke(appSettings).Returns(expectedSplitwiseInfo);
+            _getSplitwiseInfoOperation.Invoke(appSettings).Returns(splitwiseInfo);
 
-            var expectedYnabBudgetGuid = Guid.NewGuid();
-            var expectedBudgets = new BudgetSummaryResponse
+            var ynabAccountGuid = Guid.NewGuid();
+            var ynabInfo = new YnabInfo
             {
-                Data = new BudgetModel
-                {
-                    Budgets = new List<BudgetSummary> {new() {Name = "budgetName", Id = expectedYnabBudgetGuid}}
-                }
+                Budget = new BudgetSummary {Id = Guid.NewGuid()},
+                SplitwiseAccount = new Account {Id = ynabAccountGuid}
             };
-            _ynabClient.GetBudgets(true).Returns(expectedBudgets);
-
-            var expectedYnabBudgetAccountGuid = Guid.NewGuid();
-            var expectedBudgetAccounts = new AccountsResponse
-            {
-                Data = new AccountsModel
-                {
-                    Accounts = new List<Account>
-                    {
-                        new() {Name = "splitwiseAccountName", Id = expectedYnabBudgetAccountGuid}
-                    }
-                }
-            };
-            _ynabClient.GetBudgetAccounts(expectedYnabBudgetGuid).Returns(expectedBudgetAccounts);
+            _getYnabInfoOperation.Invoke(appSettings).Returns(ynabInfo);
 
             var expectedTransactions = new Transactions
             {
@@ -99,7 +86,7 @@ namespace SplitnabTest
                 {
                     new()
                     {
-                        AccountId = expectedYnabBudgetAccountGuid,
+                        AccountId = ynabAccountGuid,
                         Date = expenseDate,
                         Amount = 61725000,
                         PayeeName = "friendName",
@@ -110,7 +97,7 @@ namespace SplitnabTest
             };
 
             // Act
-            _sut = new SplitnabRunner(_logger, _getSplitwiseInfoOperation, _ynabClient);
+            _sut = new SplitnabRunner(_logger, _getSplitwiseInfoOperation, _getYnabInfoOperation, _ynabClient);
             var result = await _sut.Run(appSettings, true);
 
             // Assert

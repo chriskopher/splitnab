@@ -58,6 +58,7 @@ namespace Splitnab
                         .AddSingleton<ISplitwiseClient, SplitwiseClient.Client>()
                         .AddSingleton<IYnabClient, YnabClient.Client>()
                         .AddSingleton<IGetSplitwiseInfoOperation, GetSplitwiseInfoOperation>()
+                        .AddSingleton<IGetYnabInfoOperation, GetYnabInfoOperation>()
                         .AddSingleton<SplitnabRunner>());
 
         private static async Task<AppSettings> ParseAppSettings(string appsettingsFile)
