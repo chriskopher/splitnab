@@ -28,9 +28,9 @@ namespace Splitnab
             _ynabClient = ynabClient;
         }
 
-        public async Task<Transactions?> Run(AppSettings settings, bool dryRun)
+        public async Task<Transactions?> Run(AppSettings appSettings, bool dryRun)
         {
-            var swInfo = await _getSplitwiseInfoOperation.Invoke(settings);
+            var swInfo = await _getSplitwiseInfoOperation.Invoke(appSettings);
             if (swInfo == null)
             {
                 _logger.LogError("Unable to fetch required Splitwise information");
@@ -39,7 +39,7 @@ namespace Splitnab
                 return null;
             }
 
-            var ynabInfo = await _getYnabInfoOperation.Invoke(settings);
+            var ynabInfo = await _getYnabInfoOperation.Invoke(appSettings);
             if (ynabInfo == null)
             {
                 _logger.LogError("Unable to fetch required YNAB information");
@@ -61,13 +61,13 @@ namespace Splitnab
             }
             else
             {
-                _ynabClient.ConfigureAuthorization(settings.Ynab.PersonalAccessToken);
+                _ynabClient.ConfigureAuthorization(appSettings.Ynab.PersonalAccessToken);
 
                 await _ynabClient.PostTransactions(ynabInfo.Budget.Id, transactionsToPost);
                 _logger.LogInformation(
                     "Successfully saved {NumberOfTransactions} transactions from Splitwise to YNAB using budget {YnabBudgetName} in the {YnabSplitwiseAccountName} account!",
-                    transactionsToPost.SaveTransactions.Count, settings.Ynab.BudgetName,
-                    settings.Ynab.SplitwiseAccountName);
+                    transactionsToPost.SaveTransactions.Count, appSettings.Ynab.BudgetName,
+                    appSettings.Ynab.SplitwiseAccountName);
             }
 
             return transactionsToPost;

@@ -132,7 +132,7 @@ namespace SplitnabTest
                 }
             };
 
-            var expectedUser = new CurrentUserResponse();
+            var expectedUser = new CurrentUserResponse {User = new User {Id = 1, FirstName = "firstName"}};
             _splitwiseClient.GetCurrentUser().Returns(expectedUser);
 
             var expectedFriends = new FriendsResponse();
