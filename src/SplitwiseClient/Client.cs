@@ -1,5 +1,6 @@
 using System;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using RestSharp;
 using RestSharp.Serializers.SystemTextJson;
@@ -59,7 +60,10 @@ namespace SplitwiseClient
         /// <param name="token">The access token to be set as the default</param>
         private void SetAuthorizationToken(AccessToken token)
         {
-            _restClient.AddDefaultHeader("Authorization", $"Bearer {token.Token}");
+            if (_restClient.DefaultParameters.All(x => x.Name != "Authorization"))
+            {
+                _restClient.AddDefaultHeader("Authorization", $"Bearer {token.Token}");
+            }
         }
 
         public async Task<CurrentUserResponse> GetCurrentUser()

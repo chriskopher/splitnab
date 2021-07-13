@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using RestSharp;
 using RestSharp.Serializers.SystemTextJson;
@@ -32,7 +33,10 @@ namespace YnabClient
 
         public void ConfigureAuthorization(string personalAccessToken)
         {
-            _restClient.AddDefaultHeader("Authorization", $"Bearer {personalAccessToken}");
+            if (_restClient.DefaultParameters.All(x => x.Name != "Authorization"))
+            {
+                _restClient.AddDefaultHeader("Authorization", $"Bearer {personalAccessToken}");
+            }
         }
 
         public Task<UserResponse> GetCurrentUser()
