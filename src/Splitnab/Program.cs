@@ -4,6 +4,7 @@ using System.CommandLine.Builder;
 using System.CommandLine.Invocation;
 using System.CommandLine.Parsing;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
@@ -38,7 +39,17 @@ namespace Splitnab
                     using var host = CreateHostBuilder().Build();
                     var splitnabRunner = ActivatorUtilities.CreateInstance<SplitnabRunner>(host.Services);
 
-                    await splitnabRunner.Run(await ParseAppSettings(appsettingsFile), dryRun);
+                    var appSettings = await ParseAppSettings(appsettingsFile);
+
+                    var transactions = await splitnabRunner.Run(appSettings, dryRun);
+                    var success = transactions?.SaveTransactions.Any();
+
+                    if (!dryRun && success.HasValue)
+                    {
+                        // After a successful run, save the current date to the appsettings file
+                        // so that the next run won't duplicate the already imported transactions
+                        await WriteCurrentDate(appsettingsFile, appSettings);
+                    }
                 });
 
             return await new CommandLineBuilder(rootCommand)
@@ -70,6 +81,16 @@ namespace Splitnab
             return await JsonSerializer.DeserializeAsync<AppSettings>(fileStream, options)
                    ?? throw new ArgumentException(
                        "Provided appsettings.json file deserialized to null. Ensure this file has the correct format.");
+        }
+
+        private static async Task WriteCurrentDate(string filePath, AppSettings appSettings)
+        {
+            appSettings.Splitwise.TransactionsDatedAfter = DateTimeOffset.Now;
+
+            var options = new JsonSerializerOptions {WriteIndented = true};
+            var jsonString = JsonSerializer.Serialize(appSettings, options);
+
+            await File.WriteAllTextAsync(filePath, jsonString);
         }
     }
 }

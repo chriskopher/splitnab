@@ -19,7 +19,7 @@ namespace Splitnab.Model
         public string ConsumerKey { get; init; }
         public string ConsumerSecret { get; init; }
         public string FriendEmail { get; init; }
-        public DateTimeOffset TransactionsDatedAfter { get; init; }
+        public DateTimeOffset TransactionsDatedAfter { get; set; }
     }
 
     public record Ynab
